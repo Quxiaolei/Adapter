@@ -1,11 +1,3 @@
-//
-//  Adapter.h
-//  
-//
-//  Created by yiliao on 14/12/3.
-//  Copyright (c) 2014年 CYRJ. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
 @interface Adapter : NSObject
