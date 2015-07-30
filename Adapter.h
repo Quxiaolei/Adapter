@@ -1,4 +1,3 @@
-
 #define currentScreenHeight [UIScreen mainScreen].bounds.size.height;
 
 #import <Foundation/Foundation.h>

@@ -1,4 +1,3 @@
-
 /**
  *  主要功能:
  *  1,通过代码适配,传入不同的参数进行布局,选择不同的图片,设置字体大小
@@ -20,6 +19,12 @@
  *
  *  @return 返回相应的位置布局
  */
+ 
+ /
+ *	修改意见：
+ *	增加横屏竖屏的支持（当前屏幕的宽高，看是否正常的高大于宽）
+ *
+ /
 +(CGRect) set4Frame:(CGRect)rect4 and5Frame:(CGRect)rect5 and6Frame:(CGRect)rect6 and6_Frame:(CGRect) rect6_
 {
     if(currentScreenHeight == 480.0f){
