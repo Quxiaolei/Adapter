@@ -2,12 +2,61 @@
  *  主要功能:
  *  1,通过代码适配,传入不同的参数进行布局,选择不同的图片,设置字体大小
  *  2,手机号码验证
+ *  3,时间戳转换为相应格式的时间字符串
+ *  4,字符串处理(包括字体大小,颜色设置)(UILabel)
+ *
  *
  */
 
 #import "Adapter.h"
 
 @implementation Adapter
+
+#pragma mark 时间戳相关
++ (NSString *)getDateYMDFromTimerInterval:(NSString *)getDateYMDFromTimerInterval withDateFormat:(NSString *)dateFormat
+{
+    //服务器时间戳与APP时间戳不一致
+    NSDate *rightDate = [NSDate dateWithTimeIntervalSince1970:[timeInterval floatValue]/1000];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:dateFormatter];
+    NSString * dateStr = [dateFormatter stringFromDate:rightDate];
+    return dateStr;
+}
+
+#pragma mark 字符串处理(UILabel)
+
+/**
+ *  改变字符串中某些字符的颜色
+ *
+ *  @param string 传入原始字符串
+ *  @param color  传入要改变的字符串的颜色
+ *  @param range  传入要改变的字符串的位置
+ *
+ *  @return 返回改变后的可变字符串(.attributedText = )
+ */
++ (NSMutableAttributedString *)changeStringColor:(NSString *)string strColor:(UIColor *)color strRange:(NSRange)range
+{
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:string];
+    [attributeString addAttribute:NSForegroundColorAttributeName value:color range:range];
+    return attributeString;
+}
+/**
+ *  改变字符串中某些字符的字体
+ *
+ *  @param string 传入原始字符串
+ *  @param font   传入要改变的字符串的字体
+ *  @param range  传入要改变的字符串的位置
+ *
+ *  @return 返回改变后的可变字符串(.attributedText = )
+ */
++ (NSMutableAttributedString *)changeStringFont:(NSString *)string strFont:(UIFont *)font strRange:(NSRange)range
+{
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:string];
+    [attributeString addAttribute:NSFontAttributeName value:font range:range];
+    return attributeString;
+}
+
+#pragma mark 屏幕适配相关
 
 /**
  *  根据当前屏幕高度选择不同的位置布局
@@ -20,10 +69,11 @@
  *  @return 返回相应的位置布局
  */
 
-
  /*
  *	修改意见：
  *	增加横屏竖屏的支持（当前屏幕的宽高，看是否正常的高大于宽）
+ *
+ *  屏幕适配:autoResizing > autoLayout > 此方法
  *
  */
 +(CGRect) set4Frame:(CGRect)rect4 and5Frame:(CGRect)rect5 and6Frame:(CGRect)rect6 and6_Frame:(CGRect) rect6_
@@ -108,6 +158,8 @@
     }
     return [UIFont boldSystemFontOfSize:font4];
 }
+
+#pragma mark 正则校验
 
 //验证手机号码
 + (BOOL)validateMobile:(NSString *)mobileNum
