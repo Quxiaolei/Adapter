@@ -201,12 +201,10 @@
     if (([regextestmobile evaluateWithObject:mobileNum] == YES)
         || ([regextestcm evaluateWithObject:mobileNum] == YES)
         || ([regextestct evaluateWithObject:mobileNum] == YES)
-        || ([regextestcu evaluateWithObject:mobileNum] == YES))
-    {
+        || ([regextestcu evaluateWithObject:mobileNum] == YES)){
         return YES;
     }
-    else
-    {
+    else{
         return NO;
     }
 }
