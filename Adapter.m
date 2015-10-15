@@ -12,7 +12,7 @@
 
 @implementation Adapter
 
-#pragma mark 时间戳相关
+#pragma mark - 时间戳相关
 + (NSString *)getDateYMDFromTimerInterval:(NSString *)getDateYMDFromTimerInterval withDateFormat:(NSString *)dateFormat
 {
     //服务器时间戳与APP时间戳不一致
@@ -23,7 +23,7 @@
     return dateStr;
 }
 
-#pragma mark 字符串处理(UILabel)
+#pragma mark - 字符串处理(UILabel)
 
 /**
  *  改变字符串中某些字符的颜色
@@ -56,7 +56,7 @@
     return attributeString;
 }
 
-#pragma mark 屏幕适配相关
+#pragma mark - 屏幕适配相关
 
 /**
  *  根据当前屏幕高度选择不同的位置布局
@@ -159,7 +159,7 @@
     return [UIFont boldSystemFontOfSize:font4];
 }
 
-#pragma mark 正则校验
+#pragma mark - 正则校验
 
 //验证手机号码
 + (BOOL)validateMobile:(NSString *)mobileNum
@@ -209,4 +209,22 @@
     }
 }
 
+//验证身份证号
++ (BOOL)validateIdentityCard:(NSString *)identityCard
+{
+    if (identityCard.length <= 0) {
+        return NO;
+    }
+    NSString * regex = @"^(\\d{14}|\\d{17})(\\d|[xX])$";
+    NSPredicate * identityCardPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
+    return [identityCardPredicate evaluateWithObject:identityCard];
+}
+
+//验证邮箱
++ (BOOL)validateEmail:(NSString *)email
+{
+    NSString * emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate * emailPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    return [emailPredicate evaluateWithObject:email];
+}
 @end
