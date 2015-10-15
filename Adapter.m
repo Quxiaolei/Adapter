@@ -1,26 +1,104 @@
-/**
- *  主要功能:
- *  1,通过代码适配,传入不同的参数进行布局,选择不同的图片,设置字体大小
- *  2,手机号码验证
- *  3,时间戳转换为相应格式的时间字符串
- *  4,字符串处理(包括字体大小,颜色设置)(UILabel)
- *
- *
- */
 
 #import "Adapter.h"
 
 @implementation Adapter
 
 #pragma mark - 时间戳相关
-+ (NSString *)getDateYMDFromTimerInterval:(NSString *)getDateYMDFromTimerInterval withDateFormat:(NSString *)dateFormat
+
+/**
+ *  获取时间戳(距1970年的时间间隔)
+ *
+ *  @return 时间间隔字符串
+ */
++ (NSString * )getTimestampSince1970
+{
+    //获取当前时间
+    NSDate *dateNow = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate:dateNow];
+    //转换为本地时间,加上时区
+    NSDate *localeDate = [dateNow  dateByAddingTimeInterval: interval];
+    //转换时间戳
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[localeDate timeIntervalSince1970]];
+    NSLog(@"localeDate:%@", localeDate);
+    NSLog(@"timeSp:%@",timeSp); //时间戳的值
+    return timeSp;
+}
+/**
+ *  根据传入格式,转换时间格式
+ *
+ *  @param timeInterval    时间戳(服务器时间)
+ *  @param formatterString 要转换的时间格式
+ *
+ *  @return 转换后的时间格式
+ */
++ (NSString *)getDateYMDFromTimerInterval:(NSString *)timeInterval withDateFormat:(NSString *)formatterString
 {
     //服务器时间戳与APP时间戳不一致
-    NSDate *rightDate = [NSDate dateWithTimeIntervalSince1970:[timeInterval floatValue]/1000];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:dateFormatter];
+    NSDate * rightDate = [NSDate dateWithTimeIntervalSince1970:[timeInterval floatValue]/1000];
+    NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:formatterString];
     NSString * dateStr = [dateFormatter stringFromDate:rightDate];
     return dateStr;
+}
+
+#pragma mark - 字符串处理
+
+/**
+ *  MD5加密
+ *
+ *  @param str 未加密字符串
+ *
+ *  @return 加密字符串
+ */
++ (NSString *)md5:(NSString *)str
+{
+    const char *cStr = [str UTF8String];
+    unsigned char result[32];
+    CC_MD5(cStr, strlen(cStr), result); // This is the md5 call
+    
+    return [[NSString stringWithFormat:
+             @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+             result[0], result[1], result[2], result[3],
+             result[4], result[5], result[6], result[7],
+             result[8], result[9], result[10], result[11],
+             result[12], result[13], result[14], result[15]
+             ] uppercaseString];
+}
+/**
+ *  用某个字符替换字符串中的字符
+ *
+ *  @param preBase64String 传入原始的Base64编码字符串
+ *  <28c66a8e 7a589e1e c0cf6757 3ddfb331 135b56a4 92b227ca 1b1bd435 073717b7>
+ *
+ *  @return 替换后的字符串
+ */
++ (NSString * )getBase64StringWithoutSpace:(NSString *) preBase64String
+{
+    NSString * string = [preBase64String stringByReplacingOccurrencesOfString:@" " withString:@""];
+    //    去除两端的括号
+    NSRange range = {1,64};
+    return  [string substringWithRange:range];
+}
+/**
+ *  unicode转换
+ *
+ *  @param unicodeStr 传入unicode码
+ *
+ *  @return 返回替换后的unicode
+ */
++ (NSString *)replaceUnicode:(NSString *)unicodeStr
+{
+    NSString *tempStr1 = [unicodeStr stringByReplacingOccurrencesOfString:@"\\u" withString:@"\\U"];
+    NSString *tempStr2 = [tempStr1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    NSString *tempStr3 = [[@"\"" stringByAppendingString:tempStr2] stringByAppendingString:@"\""];
+    NSData *tempData = [tempStr3 dataUsingEncoding:NSUTF8StringEncoding];
+    NSString* returnStr = [NSPropertyListSerialization propertyListFromData:tempData
+                                                           mutabilityOption:NSPropertyListImmutable
+                                                                     format:NULL
+                                                           errorDescription:NULL];
+    //NSLog(@"Output = %@", returnStr);
+    return [returnStr stringByReplacingOccurrencesOfString:@"\\r\\n" withString:@"\n"];
 }
 
 #pragma mark - 字符串处理(UILabel)
@@ -69,7 +147,7 @@
  *  @return 返回相应的位置布局
  */
 
- /*
+/*
  *	修改意见：
  *	增加横屏竖屏的支持（当前屏幕的宽高，看是否正常的高大于宽）
  *
@@ -226,5 +304,149 @@
     NSString * emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate * emailPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailPredicate evaluateWithObject:email];
+}
+
+#pragma mark - 文件处理
+
+/**
+ *  截屏功能
+ *
+ *  @param currentView 传入要保存的视图
+ *  @param size        传入要保存的视图的尺寸
+ */
++ (void)getSnapshotFromView:(UIView *)currentView
+{
+    //currentView:当前的view  创建一个基于位图的图形上下文并指定大小为size
+    UIGraphicsBeginImageContext(currentView.bounds.size);
+    //renderInContext呈现接受者及其子范围到指定的上下文
+    [currentView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    //返回一个基于当前图形上下文的图片
+    UIImage * viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    //移除栈顶的基于当前位图的图形上下文
+    UIGraphicsEndImageContext();
+    //然后将该图片保存到图片库
+    UIImageWriteToSavedPhotosAlbum(viewImage, nil, nil, nil);
+}
+/**
+ *  通过文件夹和文件名获取文件路径
+ *
+ *  @param directoryName 文件夹名
+ *  @param fileName      文件名
+ *
+ *  @return 文件路径
+ */
++ (NSString *)getFilePathWithDirectoryName:(NSString *)directoryName fileName:(NSString *)fileName
+{
+    NSString * directoryPath = [NSString stringWithFormat:@"%@/%@",directoryName,fileName];
+    //判断文件是否存在
+    if (![[NSFileManager defaultManager] fileExistsAtPath:directoryPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString * filePath = [NSString stringWithFormat:@"%@/%@",directoryPath,fileName];
+    return filePath;
+}
+/**
+ *  更新用户默认配置文件
+ *
+ *  @param objectArray 编码对象数组
+ *  @param keyArray    编码对象关键字
+ *
+ *  @return 成功标示:YES
+ */
++ (BOOL)setUserDefaultsWithObjectArray:(NSArray *)objectArray keyArray:(NSArray *)keyArray
+{
+    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
+    for (int i = 0; i < objectArray.count; i++){
+        [userDefault setObject:objectArray[i] forKey:keyArray[i]];
+    }
+    [userDefault synchronize];
+    return YES;
+}
+/**
+ *  查询用户默认配置文件
+ *
+ *  @param keyArray 编码对象关键字
+ *
+ *  @return 可变编码对象数组
+ */
++ (NSMutableArray * )getUserDefaultsWithKeyArray:(NSArray *)keyArray
+{
+    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableArray * array = [[NSMutableArray alloc]initWithCapacity:keyArray.count];
+    for (int i = 0; i < keyArray.count; i++){
+        if (![userDefault stringForKey:keyArray[i]]) {
+            return nil;
+        }
+        [array addObject:[userDefault stringForKey:keyArray[i]]];
+    }
+    return array;
+}
+/**
+ *  归档
+ *
+ *  @param objectArray 编码对象数组
+ *  @param keyArray    编码对象关键字
+ *
+ *  @return 成功标示:YES
+ */
++ (BOOL)archiverWithObjectArray:(NSArray *)objectArray keyArray:(NSArray *)keyArray
+{
+    //    NSArray *array = [NSArray arrayWithObjects:@"zhangsan",@"lisi",nil];
+    NSMutableData *data = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    //编码
+    for (int i = 0; i < objectArray.count; i++){
+        [archiver encodeObject:objectArray[i] forKey:keyArray[i]];
+    }
+    //完成编码，将上面的归档数据填充到data中，此时data中已经存储了归档对象的数据
+    [archiver finishEncoding];
+    
+    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/userData"];
+    BOOL success = [data writeToFile:filePath atomically:YES];
+    if(success){
+        NSLog(@"用户信息,归档成功");
+        return YES;
+    }
+    return NO;
+}
+/**
+ *  解档
+ *
+ *  @param keyArray 编码对象关键字
+ *
+ *  @return 可变编码对象数组
+ */
++ (NSMutableArray *)unarchiverWithKeyArray:(NSArray *)keyArray
+{
+    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/userData"];
+    //读取归档数据
+    NSData *data = [[NSData alloc] initWithContentsOfFile:filePath];
+    //创建解归档对象，对data中的数据进行解归档
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    
+    NSMutableArray * array = [[NSMutableArray alloc]initWithCapacity:keyArray.count];
+    //解归档
+    for (int i = 0; i < keyArray.count; i++){
+        [array addObject:[unarchiver decodeObjectForKey:keyArray[i]]];
+    }
+    return array;
+}
+
+#pragma mark - UI附加效果展示
+
+/**
+ *  警告窗口
+ *
+ *  @param title        标题
+ *  @param message      内容
+ *  @param cancelString 取消标题
+ *  @param delegate     代理
+ *  @param tag          tag值
+ */
++ (void)showAlertViewWithTitle:(NSString *)title message:(NSString *)message cancelButtonString:(NSString *)cancelString delegate:(id)delegate tag:(NSInteger)tag;
+{
+    UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:title message:message delegate:delegate cancelButtonTitle:cancelString otherButtonTitles:@"确定", nil];
+    alertView.tag = tag;
+    [alertView show];
 }
 @end
