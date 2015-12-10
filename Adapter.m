@@ -134,7 +134,7 @@
     return attributeString;
 }
 /**
- *  改变字符串中某些字符的颜色
+ *  改变字符串中某些字符的颜色和字体
  *
  *  @param string 传入原始字符串
  *  @param color  传入要改变的字符串的颜色
