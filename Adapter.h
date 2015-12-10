@@ -52,6 +52,8 @@
 + (NSMutableAttributedString *)changeStringColor:(NSString *)string strColor:(UIColor *)color strRange:(NSRange)range;
 //改变字符串中某些字符的字体
 + (NSMutableAttributedString *)changeStringFont:(NSString *)string strFont:(UIFont *)font strRange:(NSRange)range;
+//改变字符串中某些字符的颜色/字体
++ (NSMutableAttributedString *)changeStringColor:(NSString *)string strColor:(UIColor *)color andFont:(UIFont *)font strRange:(NSRange)range;
 
 #pragma mark - 屏幕适配相关
 //设置位置

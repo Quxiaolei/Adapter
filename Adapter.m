@@ -133,6 +133,24 @@
     [attributeString addAttribute:NSFontAttributeName value:font range:range];
     return attributeString;
 }
+/**
+ *  改变字符串中某些字符的颜色
+ *
+ *  @param string 传入原始字符串
+ *  @param color  传入要改变的字符串的颜色
+ *  @param font   传入要改变的字符串的字体
+ *  @param range  传入要改变的字符串的位置
+ *
+ *  @return 返回改变后的可变字符串(.attributedText = )
+ */
++ (NSMutableAttributedString *)changeStringColor:(NSString *)string strColor:(UIColor *)color andFont:(UIFont *)font strRange:(NSRange)range
+{
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:string];
+    [attributeString addAttributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName:font} range:range];
+    //    [attributeString addAttribute:NSForegroundColorAttributeName value:color range:range];
+    //    [attributeString addAttribute:NSFontAttributeName value:font range:range];
+    return attributeString;
+}
 
 #pragma mark - 屏幕适配相关
 
