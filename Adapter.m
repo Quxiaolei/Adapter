@@ -43,6 +43,49 @@
 }
 
 #pragma mark - 字符串处理
+/*
+ *  判断字符串是否是整型
+ */
++ (BOOL)isPureInt:(NSString*)string
+{
+    NSScanner* scan = [NSScanner scannerWithString:string];
+    int val;
+    return[scan scanInt:&val] && [scan isAtEnd];
+}
+/*
+ *  判断是否为浮点形
+ */
++ (BOOL)isPureFloat:(NSString*)string
+{
+    NSScanner* scan = [NSScanner scannerWithString:string];
+    float val;
+    return[scan scanFloat:&val] && [scan isAtEnd];
+}
+/*!
+ *
+ *  判断字符串是否为网址
+ *
+ *  @param url 传入的字符串
+ *
+ *  @return 是否为合法网址
+ */
++(BOOL)isUrl:(NSString *)url
+{
+    NSString * URLpattern = @"^(http|https)://";
+    
+    NSError *error = NULL;
+    NSRegularExpression *URLregex = [NSRegularExpression regularExpressionWithPattern:URLpattern
+                                                                              options:NSRegularExpressionCaseInsensitive
+                                                                                error: &error];
+    
+    NSUInteger numberOfMatches = [URLregex numberOfMatchesInString:url
+                                                           options:0
+                                                             range:NSMakeRange(0, [url length])];
+    if (numberOfMatches == 0) {
+        return NO;
+    }
+    return YES;
+}
 
 /**
  *  MD5加密
@@ -152,6 +195,77 @@
     return attributeString;
 }
 
+/*!
+ *
+ *  计算高度  根据文字和字体
+ *
+ *  @param width 当前字符串限制宽度
+ *  @param text  字符串
+ *  @param font  字体
+ *
+ *  @return 计算后的高度
+ */
++ (CGFloat)heightWithWidth:(CGFloat)width text:(NSString *)text font:(UIFont *)font
+{
+    CGFloat height = 0;
+    NSDictionary *attribute = @{NSFontAttributeName:font};
+    if (text && text.length > 0) {
+        height = [text boundingRectWithSize:CGSizeMake(width, 0)
+                                    options:\
+                  NSStringDrawingTruncatesLastVisibleLine |
+                  NSStringDrawingUsesLineFragmentOrigin |
+                  NSStringDrawingUsesFontLeading
+                                 attributes:attribute
+                                    context:nil].size.height;
+    }
+    return height;
+}
+
+/*!
+ *
+ *  计算宽度  根据文字和字体
+ *
+ *  @param height 当前字符串限制高度
+ *  @param text   字符串
+ *  @param font   字体
+ *
+ *  @return 计算后的宽度
+ */
++ (CGFloat)widthWithHeight:(CGFloat)height text:(NSString *)text font:(UIFont *)font
+{
+    CGFloat width = 0;
+    NSDictionary *attribute = @{NSFontAttributeName:font};
+    if (text && text.length > 0) {
+        width = [text boundingRectWithSize:CGSizeMake(0, height)
+                                   options:\
+                 NSStringDrawingTruncatesLastVisibleLine |
+                 NSStringDrawingUsesLineFragmentOrigin |
+                 NSStringDrawingUsesFontLeading
+                                attributes:attribute
+                                   context:nil].size.width;
+    }
+    return width;
+}
+/*!
+ *  @author xiaolei, 16-08-12 14:08:40
+ *
+ *  设置行间距
+ *
+ *  @param height 行间距
+ *  @param width  字符串宽度
+ *  @param text   字符串
+ *
+ *  @return 设置后的字符串
+ */
++ (NSMutableAttributedString *)setLineHei:(NSString *)height width:(CGFloat)width text:(NSString *)text
+{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]initWithString:text];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    [paragraphStyle setLineSpacing:[height integerValue]];
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, text.length)];
+    
+    return attributedString;
+}
 #pragma mark - 屏幕适配相关
 
 /**
@@ -363,6 +477,60 @@
     NSString * filePath = [NSString stringWithFormat:@"%@/%@",directoryPath,fileName];
     return filePath;
 }
+/*!
+ *
+ *  保存本地缓存
+ *
+ *  @param dics     保存的dict
+ *  @param fileName 文件名,默认路径在NSDocumentDirectory下
+ */
++ (void)save:(NSDictionary *)dics fileName:(NSString *)fileName
+{
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* docDir = [paths objectAtIndex:0];
+    NSString* plistPath = [docDir stringByAppendingPathComponent:fileName];
+    NSFileManager* fm = [NSFileManager defaultManager];
+    [fm createFileAtPath:plistPath contents:nil attributes:nil];
+    [dics writeToFile:plistPath atomically:YES];
+}
+
+/*!
+ *
+ *  删除本地缓存
+ *
+ *  @param fileName 文件名
+ */
++ (void)deleteFileAtPath:(NSString *)fileName
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSFileManager *fileMgr = [NSFileManager defaultManager];
+    NSString *MapLayerDataPath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    BOOL bRet = [fileMgr fileExistsAtPath:MapLayerDataPath];
+    if (bRet) {
+        NSError *err;
+        [fileMgr removeItemAtPath:MapLayerDataPath error:&err];
+    }
+}
+
+
+/*!
+ *
+ *  读取本地缓存
+ *
+ *  @param fileName 文件名
+ *
+ *  @return 返回取到的mutableDict
+ */
++ (NSMutableDictionary *)read:(NSString *)fileName
+{
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* docDir = [paths objectAtIndex:0];
+    NSString* plistPath = [docDir stringByAppendingPathComponent:fileName];
+    NSMutableDictionary *tempDic = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+    return tempDic;
+}
+
 /**
  *  更新用户默认配置文件
  *

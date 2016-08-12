@@ -39,6 +39,12 @@
 + (NSString *)getDateYMDFromTimerInterval:(NSString *)getDateYMDFromTimerInterval withDateFormat:(NSString *)dateFormat;
 
 #pragma mark - 字符串处理
+//判断字符串是否是整型
++ (BOOL)isPureInt:(NSString*)string;
+//判断是否为浮点形
++ (BOOL)isPureFloat:(NSString*)string;
+//判断字符串是否为网址
++(BOOL)isUrl:(NSString *)url;
 //md5加密
 + (NSString *)md5:(NSString *)str;
 //base64加密
@@ -54,6 +60,12 @@
 + (NSMutableAttributedString *)changeStringFont:(NSString *)string strFont:(UIFont *)font strRange:(NSRange)range;
 //改变字符串中某些字符的颜色/字体
 + (NSMutableAttributedString *)changeStringColor:(NSString *)string strColor:(UIColor *)color andFont:(UIFont *)font strRange:(NSRange)range;
+// 计算高度  根据文字和字体
++ (CGFloat)heightWithWidth:(CGFloat)width text:(NSString *)text font:(UIFont *)font;
+// 计算宽度  根据文字和字体
++ (CGFloat)widthWithHeight:(CGFloat)height text:(NSString *)text font:(UIFont *)font;
+//设置字符串行间距
++ (NSMutableAttributedString *)setLineHei:(NSString *)height width:(CGFloat)width text:(NSString *)text;
 
 #pragma mark - 屏幕适配相关
 //设置位置
@@ -79,6 +91,13 @@
 
 //通过文件夹和文件名获取文件路径
 + (NSString *)getFilePathWithDirectoryName:(NSString *)directoryName fileName:(NSString *)fileName;
+
+//保存本地缓存
++ (void)save:(NSDictionary *)dics fileName:(NSString *)fileName;
+//删除本地缓存
++ (void)deleteFileAtPath:(NSString *)fileName;
+//读取本地缓存
++ (NSMutableDictionary *)read:(NSString *)fileName;
 
 //更新用户默认配置文件
 + (BOOL)setUserDefaultsWithObjectArray:(NSArray *)objectArray keyArray:(NSArray *)keyArray;
