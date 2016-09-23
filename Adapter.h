@@ -9,21 +9,6 @@
  *  6,UI效果显示
  */
 
-#pragma mark - 宏定义
-//判断IOS8
-#define IOS8 [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0 ? YES:NO
-//屏幕物理宽度
-#define currentScreenWidth [UIScreen mainScreen ].bounds.size.width
-//屏幕物理高度
-#define currentScreenHeight [UIScreen mainScreen].bounds.size.height
-//RGB色
-#define RGBColor(a,b,c) [UIColor colorWithRed:a/255.0 green:b/255.0 blue:c/255.0 alpha:1.0]
-//RGB色和alpha值
-#define RGBAColor(r,g,b,a) [UIColor colorWithRed:a/255.0 green:b/255.0 blue:c/255.0 alpha:a/1.0]
-//16进制色
-#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
-
-
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CommonCrypto/CommonDigest.h> //md5
