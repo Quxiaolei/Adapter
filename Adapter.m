@@ -87,6 +87,21 @@
     return YES;
 }
 
+// 中英文混排汉字 长度
++ (NSInteger)getStringLength:(NSString *)string
+{
+    int strlength = 0;
+    char *p = (char *)[string cStringUsingEncoding:NSUnicodeStringEncoding];
+    for (int i = 0; i < [string lengthOfBytesUsingEncoding:NSUnicodeStringEncoding]; i++) {
+        if (*p) {
+            p++;
+            strlength++;
+        } else {
+            p++;
+        }
+    }
+    return strlength;
+}
 /**
  *  MD5加密
  *
@@ -144,6 +159,51 @@
     return [returnStr stringByReplacingOccurrencesOfString:@"\\r\\n" withString:@"\n"];
 }
 
+#pragma mark - 数字精度处理
+
+//加法
++(NSString *)decimalString:(NSString *)firstString plusString:(NSString *)secondString
+{
+    NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
+    NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByAdding:secondDecimalNumber];
+    return [resultDecimalNumber stringValue];
+}
+
+//减法
++(NSString *)decimalString:(NSString *)firstString subtractString:(NSString *)secondString
+{
+    NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
+    NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberBySubtracting:secondDecimalNumber];
+    return [resultDecimalNumber stringValue];
+}
+
+//乘法
++(NSString *)decimalString:(NSString *)firstString multiplyString:(NSString *)secondString
+{
+    NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
+    NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByMultiplyingBy:secondDecimalNumber];
+    return [resultDecimalNumber stringValue];
+}
+
+//除法
++(NSString *)decimalString:(NSString *)firstString divideString:(NSString *)secondString
+{
+    NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
+    NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByDividingBy:secondDecimalNumber];
+    return [resultDecimalNumber stringValue];
+}
+//加千分位
++(NSString *) changeStringToDieTausendstel:(NSString *)doubleString
+{
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc]init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    NSString *newAmount = [formatter stringFromNumber:[NSNumber numberWithDouble:[doubleString doubleValue]]];
+    return newAmount;
+}
 #pragma mark - 字符串处理(UILabel)
 
 /**

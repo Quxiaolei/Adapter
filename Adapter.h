@@ -30,12 +30,26 @@
 + (BOOL)isPureFloat:(NSString*)string;
 //判断字符串是否为网址
 +(BOOL)isUrl:(NSString *)url;
+// 中英文混排汉字 长度
++ (NSInteger)getStringLength:(NSString *)string;
 //md5加密
 + (NSString *)md5:(NSString *)str;
 //base64加密
 + (NSString * )getBase64StringWithoutSpace:(NSString *) preBase64String;
 //Unicode转换
 + (NSString *)replaceUnicode:(NSString *)unicodeStr;
+
+#pragma mark - 数字精度处理
+//加法
++(NSString *)decimalString:(NSString *)firstString plusString:(NSString *)secondString;
+//减法
++(NSString *)decimalString:(NSString *)firstString subtractString:(NSString *)secondString;
+//乘法
++(NSString *)decimalString:(NSString *)firstString multiplyString:(NSString *)secondString;
+//除法
++(NSString *)decimalString:(NSString *)firstString divideString:(NSString *)secondString;
+//加千分位
++(NSString *) changeStringToDieTausendstel:(NSString *)doubleString;
 
 #pragma mark - 字符串处理(UILabel)
 //(.attributedText = )
