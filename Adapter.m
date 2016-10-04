@@ -164,36 +164,44 @@
 //加法
 +(NSString *)decimalString:(NSString *)firstString plusString:(NSString *)secondString
 {
+    //保留小数点后2位,NSRoundBankers四舍五入
+    NSDecimalNumberHandler *decimalNumberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundBankers scale:2 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:YES];
     NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
     NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
-    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByAdding:secondDecimalNumber];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByAdding:secondDecimalNumber withBehavior:decimalNumberHandler];
     return [resultDecimalNumber stringValue];
 }
 
 //减法
 +(NSString *)decimalString:(NSString *)firstString subtractString:(NSString *)secondString
 {
+    //保留小数点后2位,NSRoundBankers四舍五入
+    NSDecimalNumberHandler *decimalNumberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundBankers scale:2 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:YES];
     NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
     NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
-    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberBySubtracting:secondDecimalNumber];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberBySubtracting:secondDecimalNumber withBehavior:decimalNumberHandler];
     return [resultDecimalNumber stringValue];
 }
 
 //乘法
 +(NSString *)decimalString:(NSString *)firstString multiplyString:(NSString *)secondString
 {
+    //保留小数点后2位,NSRoundBankers四舍五入
+    NSDecimalNumberHandler *decimalNumberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundBankers scale:2 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:YES];
     NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
     NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
-    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByMultiplyingBy:secondDecimalNumber];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByMultiplyingBy:secondDecimalNumber withBehavior:decimalNumberHandler];
     return [resultDecimalNumber stringValue];
 }
 
 //除法
 +(NSString *)decimalString:(NSString *)firstString divideString:(NSString *)secondString
 {
+    //保留小数点后2位,NSRoundBankers四舍五入
+    NSDecimalNumberHandler *decimalNumberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundBankers scale:2 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:YES];
     NSDecimalNumber *firstDecimalNumber = [NSDecimalNumber decimalNumberWithString:firstString];
     NSDecimalNumber *secondDecimalNumber = [NSDecimalNumber decimalNumberWithString:secondString];
-    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByDividingBy:secondDecimalNumber];
+    NSDecimalNumber *resultDecimalNumber = [firstDecimalNumber decimalNumberByDividingBy:secondDecimalNumber withBehavior:decimalNumberHandler];
     return [resultDecimalNumber stringValue];
 }
 //加千分位
