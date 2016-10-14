@@ -22,7 +22,9 @@
 //根据传入格式,转换时间格式
 //yyyy-MM-dd HH:mm
 + (NSString *)getDateYMDFromTimerInterval:(NSString *)getDateYMDFromTimerInterval withDateFormat:(NSString *)dateFormat;
-
+//获取两个时间点之间的月数
++(NSInteger )getMonthsFromDateTimeInterval:(NSTimeInterval )fromDateTimeInterval toDateTimeInterval:(NSTimeInterval )toDateTimeInterval;
++(NSInteger )getMonthsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate;
 #pragma mark - 字符串处理
 //判断字符串是否是整型
 + (BOOL)isPureInt:(NSString*)string;

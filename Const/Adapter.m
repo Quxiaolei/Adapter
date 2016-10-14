@@ -41,6 +41,32 @@
     NSString * dateStr = [dateFormatter stringFromDate:rightDate];
     return dateStr;
 }
++(NSInteger )getMonthsFromDateTimeInterval:(NSTimeInterval)fromDateTimeInterval toDateTimeInterval:(NSTimeInterval)toDateTimeInterval
+{
+    NSDate *fromDate = [NSDate dateWithTimeIntervalSinceNow:fromDateTimeInterval];
+    NSDate *toDate = [NSDate dateWithTimeIntervalSinceNow:toDateTimeInterval];
+    
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSUInteger unitFlags = NSCalendarUnitMonth | NSCalendarUnitDay;
+    NSDateComponents *components = [gregorian components:unitFlags fromDate:fromDate toDate:toDate options:0];
+    NSInteger months = [components month];
+    //    NSInteger days = [components day];//年[components year]
+    NSLog(@"month=%ld",(long)months);
+    //    NSLog(@"days=%ld",(long)days);
+    return months;
+}
+
++(NSInteger )getMonthsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+{
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSUInteger unitFlags = NSCalendarUnitMonth | NSCalendarUnitDay;
+    NSDateComponents *components = [gregorian components:unitFlags fromDate:fromDate toDate:toDate options:0];
+    NSInteger months = [components month];
+    //    NSInteger days = [components day];//年[components year]
+    NSLog(@"month=%ld",(long)months);
+    //    NSLog(@"days=%ld",(long)days);
+    return months;
+}
 
 #pragma mark - 字符串处理
 /*
